@@ -6,7 +6,7 @@
     Description:
         This code is written as part of project "RandomChampion".
     ---
-    Last Modified: 2020-10-29 17:54:56
+    Last Modified: 2020-10-29 18:45:11
     Modified By: Hyunbin Kim (khb7840@gmail.com)
     ---
     Copyright © 2020 Hyunbin Kim, All rights reserved
@@ -61,7 +61,6 @@
         let positions = ["탑", "정글", "미드", "원딜", "서폿"];
         let randomChamp;
         let randomPosition;
-        let version = "10.22.1"
         let lang = "ko_KR"
 
         function SelectRandom(array) {
@@ -85,12 +84,11 @@
             let positionElement = document.getElementById(id);
             positionElement.innerHTML += `이 챔피언을 들고<br>${pos}${suffix} 가보자! 굿럭!!`
         }
-        function ChampImageLink(name) {
+        function ChampImageLink(name, version) {
             return `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${name}.png`
         }
 
-        function AddImage(name, zoom="50%", targetID = "imgcontainer") {
-            let imageLink = ChampImageLink(name);
+        function AddImage(name, imageLink, zoom="50%", targetID = "imgcontainer") {
             let img = document.createElement("img");
             img.setAttribute("src", imageLink);
             img.setAttribute("width", zoom);
@@ -103,23 +101,32 @@
             storyElement.innerHTML += `${story}`
         }
 
-        let dataJSONlink = `https://ddragon.leagueoflegends.com/cdn/${version}/data/${lang}/champion.json`
+        function GetDataJSON(name, version) {
+            return `https://ddragon.leagueoflegends.com/cdn/${version}/data/${lang}/champion.json`;
+        }
 
-        fetch(dataJSONlink)
+        fetch("https://ddragon.leagueoflegends.com/api/versions.json")
         .then(res => res.json())
-        .then(jsonData => jsonData.data)
-        .then(data=> {
-            champs = Object.keys(data);
-            randomChamp = SelectRandom(champs);
-            randomPosition = SelectRandom(positions);
-            let suffix = PosSuffix(randomPosition);
-            PrintChampName(data[randomChamp]["name"])
-            PrintChampionDescription(data[randomChamp]["title"])
-            AddImage(randomChamp);
-            PrintPosition(randomPosition, suffix);
-            PrintStory(data[randomChamp]["blurb"]);
-            console.log(randomChamp);
-            console.log(randomPosition);
+        .then(versions => versions[0])
+        .then(version => {
+            let jsonURL = GetDataJSON(name, version);
+            fetch(jsonURL)
+            .then(res => res.json())
+            .then(jsonData => jsonData.data)
+            .then(data => {
+                champs = Object.keys(data);
+                randomChamp = SelectRandom(champs);
+                randomPosition = SelectRandom(positions);
+                let imageLink = ChampImageLink(randomChamp, version);
+                let suffix = PosSuffix(randomPosition);
+                PrintChampName(data[randomChamp]["name"])
+                PrintChampionDescription(data[randomChamp]["title"])
+                AddImage(randomChamp, imageLink);
+                PrintPosition(randomPosition, suffix);
+                PrintStory(data[randomChamp]["blurb"]);
+                console.log(randomChamp);
+                console.log(randomPosition);
+            })
         });
     </script>
 
