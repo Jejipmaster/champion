@@ -6,7 +6,7 @@
     Description:
         This code is written as part of project "RandomChampion".
     ---
-    Last Modified: 2020-10-29 17:44:57
+    Last Modified: 2020-10-29 17:51:57
     Modified By: Hyunbin Kim (khb7840@gmail.com)
     ---
     Copyright © 2020 Hyunbin Kim, All rights reserved
@@ -86,7 +86,7 @@
             positionElement.innerHTML += `이 챔피언을 들고<br>${pos}${suffix} 가보자! 굿럭!!`
         }
         function ChampImageLink(name) {
-            return `http://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${name}.png`
+            return `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${name}.png`
         }
 
         function AddImage(name, zoom="50%", targetID = "imgcontainer") {
@@ -103,7 +103,7 @@
             storyElement.innerHTML += `${story}`
         }
 
-        let dataJSONlink = `http://ddragon.leagueoflegends.com/cdn/${version}/data/${lang}/champion.json`
+        let dataJSONlink = `https://ddragon.leagueoflegends.com/cdn/${version}/data/${lang}/champion.json`
 
         fetch(dataJSONlink)
         .then(res => res.json())
