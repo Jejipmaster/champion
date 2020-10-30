@@ -6,7 +6,7 @@
     Description:
         This code is written as part of project "RandomChampion".
     ---
-    Last Modified: 2020-10-29 18:45:11
+    Last Modified: 2020-10-30 16:40:08
     Modified By: Hyunbin Kim (khb7840@gmail.com)
     ---
     Copyright © 2020 Hyunbin Kim, All rights reserved
@@ -30,29 +30,72 @@
         }
         h1 {
             font-family:'Do Hyeon'; sans-serif;
-            font-size: 80px;
+            font-size: 64px;
             color: white;
+            -webkit-text-stroke: 2px black;
         }
         h2 {
             font-family:'Do Hyeon'; sans-serif;
             font-size: 40px;
             color: white;
+            -webkit-text-stroke: 1px black;
+        }
+        h3 {
+            font-family:'Do Hyeon'; sans-serif;
+            font-size: 30px;
+            color: white;
+            -webkit-text-stroke: 1px black;
         }
         #position {
             color: gold;
+            border-color: black;
+            -webkit-text-stroke: 1px black;
         }
         p {
-            font-family: 'Yeon Sung', cursive;
+            font-family: 'Do Hyeon'; sans-serif;
             font-size: 24px;
-            color: gainsboro;
+            color: white;
+            -webkit-text-stroke: 1px black;
         }
+        .textcontainer {
+            background-color: #00000088;
+        }
+        #allytips {
+            color: cadetblue;
+        }
+        #enemytips {
+            color:indianred;
+        }
+
     </style>
+
     <div id="bigcontainer">
-        <h1 id="champion-name">오늘의<br>챔피언<br></h1>
-        <h2 id="description"></h2>
-        <div id="imgcontainer"></div>
+        <div id="headercontainer">
+            <h1 id="champion-name">랜덤 챔피언<br></h1>
+
+        </div>
+            <div id="imgcontainer"></div>
+            <h2 id="description"></h2>
+            <h2 id="champtag"></h2>
+            <h2 id=champinfo></h2>
+        <!-- <div id="fullimage"></div> -->
         <h2 id="position"></h2>
-        <p id="longstory"></p>
+        <h3 id="skin"></h3>
+        <div>
+            <h3> -팁- </h3>
+            <h3><ul id="allytips"></ul></h3>
+            <h3><ul id="enemytips"></ul></h3>
+        </div>
+        <div id="skillcontainer">
+            <h3> -스킬- </h3>
+        </div>
+        <p id="longstory"> -스토리- <br> </p>
+        <footer>
+            <p>
+            Developed by HBKProduction<br>
+            Powered by Riot API
+            </p>
+        </footer>
     </div>
 
     <script>
@@ -101,15 +144,105 @@
             storyElement.innerHTML += `${story}`
         }
 
-        function GetDataJSON(name, version) {
+        function GetDataJSON(lang, version) {
             return `https://ddragon.leagueoflegends.com/cdn/${version}/data/${lang}/champion.json`;
+        }
+        function ChampFullImageLink(name) {
+            return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${name}_0.jpg`
+        }
+        function ChampLoadingImageLink(name, num=0) {
+            return `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${name}_${num}.jpg`
+        }
+        function GetChampDataJSON(name, lang, version) {
+            return `https://ddragon.leagueoflegends.com/cdn/${version}/data/${lang}/champion/${name}.json`;
+        }
+
+        function SetBackgroundImage(imageLink, targetID="bigcontainer") {
+            let target = document.getElementById(targetID);
+            let tempStyle = document.createElement("style");
+            tempStyle.innerHTML = `#${targetID}{
+                background-image: url(${imageLink});
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+            }`
+            document.body.appendChild(tempStyle);
+        }
+        function PrintSkinName(skinname, id="skin") {
+            let skinElement = document.getElementById(id);
+            if (skinname === "default") {
+                skinname = "기본 스킨";
+            }
+            skinElement.innerHTML += `(배경은 ${skinname})`
+        }
+        function PrintInfo(info, targetID="champinfo") {
+            let target = document.getElementById(targetID);
+            target.innerHTML += `
+            공${info["attack"]}/방${info["defense"]}/마${info["magic"]}<br>
+            난이도:${info["difficulty"]}
+            `
+        }
+        function PrintTag(tagArray, targetID = "champtag") {
+            const tagNames = {
+                "Assassin":"암살", "Fighter":"전사", "Tank": "탱커",
+                "Support": "서폿", "Mage": "마법", "Marksman": "원딜"
+            }
+            let convertedTags = tagArray.map(x => tagNames[x]);
+            let target = document.getElementById(targetID);
+            target.innerHTML += convertedTags.join(", ");
+        }
+        function PrintTips(allyTipArray, enemyTipArray, allyID="allytips", enemyID="enemytips") {
+            let allytipElement = document.getElementById(allyID);
+            let enemytipElement = document.getElementById(enemyID);
+            for (allytip of allyTipArray) {
+                allytipElement.innerHTML += `<li>${allytip}</li>`
+            }
+            for (enemytip of enemyTipArray) {
+                enemytipElement.innerHTML += `<li>${enemytip}</li>`
+            }
+        }
+        function GetSkillImage(full, group, version) {
+            return `http://ddragon.leagueoflegends.com/cdn/${version}/img/${group}/${full}`
+        }
+        function PrintSkills(data, version, targetID="skillcontainer") {
+            let spellDiv;
+            let spellImg;
+            let spellTextDiv;
+            let spellImgLink;
+            let spellText;
+            let skillElement = document.getElementById(targetID);
+            let spellArray = [data["passive"]];
+            let prefix;
+            spellArray = spellArray.concat(data["spells"])
+            for (spell of spellArray) {
+                spellDiv = document.createElement("div");
+                spellImg = document.createElement("img");
+                spellTextDiv = document.createElement("div");
+                spellImgLink = GetSkillImage(
+                    spell["image"]["full"],
+                    spell["image"]["group"],
+                    version
+                )
+                if (spell["image"]["group"] == "passive") {
+                    prefix = "(패시브)";
+                } else {
+                    prefix = "";
+                }
+                spellImg.setAttribute("src", spellImgLink);
+                spellText = `<h3>${prefix} ${spell["name"]}<br></h3> <p>${spell["description"]}</p>`
+                spellDiv.appendChild(spellImg);
+                spellTextDiv.innerHTML += spellText;
+                spellDiv.appendChild(spellTextDiv);
+                skillElement.appendChild(spellDiv);
+            }
         }
 
         fetch("https://ddragon.leagueoflegends.com/api/versions.json")
         .then(res => res.json())
         .then(versions => versions[0])
         .then(version => {
-            let jsonURL = GetDataJSON(name, version);
+            let jsonURL = GetDataJSON(lang, version);
             fetch(jsonURL)
             .then(res => res.json())
             .then(jsonData => jsonData.data)
@@ -118,14 +251,32 @@
                 randomChamp = SelectRandom(champs);
                 randomPosition = SelectRandom(positions);
                 let imageLink = ChampImageLink(randomChamp, version);
+                let fullImageLink = ChampFullImageLink(randomChamp);
                 let suffix = PosSuffix(randomPosition);
                 PrintChampName(data[randomChamp]["name"])
                 PrintChampionDescription(data[randomChamp]["title"])
                 AddImage(randomChamp, imageLink);
+                //AddImage(randomChamp, fullImageLink, "100%", "fullimage");
                 PrintPosition(randomPosition, suffix);
                 PrintStory(data[randomChamp]["blurb"]);
                 console.log(randomChamp);
                 console.log(randomPosition);
+                let champJSONLink = GetChampDataJSON(randomChamp, lang, version);
+                fetch(champJSONLink)
+                .then(res=> res.json())
+                .then(data => {
+                    let champData = data["data"][randomChamp];
+                    let randomSkin = SelectRandom(champData["skins"]);
+                    let loadImageLink = ChampLoadingImageLink(
+                        randomChamp, randomSkin["num"]
+                    );
+                    SetBackgroundImage(loadImageLink);
+                    PrintSkinName(randomSkin["name"]);
+                    PrintTag(champData["tags"]);
+                    PrintInfo(champData["info"]);
+                    PrintTips(champData["allytips"], champData["enemytips"]);
+                    PrintSkills(champData, version);
+                })
             })
         });
     </script>
