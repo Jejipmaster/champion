@@ -6,7 +6,7 @@
     Description:
         This code is written as part of project "RandomChampion".
     ---
-    Last Modified: 2022-01-24 22:36:13
+    Last Modified: 2022-01-24 22:50:05
     Modified By: Hyunbin Kim (khb7840@gmail.com)
     ---
     Copyright © 2020 Hyunbin Kim, All rights reserved
@@ -178,10 +178,10 @@
             descriptionElement.innerHTML += `- ${description} -`
         }
         function PosSuffix(pos) {
-            if (pos === "탑" || pos === "서폿") {
-                return "으로";
+            if (pos === "미드") {
+                return "를";
             }
-            return "로";
+            return "을";
         }
         function PrintPosition(pos, suffix, id="position") {
             let positionElement = document.getElementById(id);
