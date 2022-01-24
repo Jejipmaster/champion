@@ -1,12 +1,12 @@
 <!--
     File: index.html
-    Project: RandomChampion
+    Project: hbk
     Created: 2020-10-29 16:38:33
     Author: Hyunbin Kim (khb7840@gmail.com)
     Description:
         This code is written as part of project "RandomChampion".
     ---
-    Last Modified: 2020-11-02 09:57:26
+    Last Modified: 2022-01-24 20:19:23
     Modified By: Hyunbin Kim (khb7840@gmail.com)
     ---
     Copyright © 2020 Hyunbin Kim, All rights reserved
@@ -30,6 +30,12 @@
 </head>
 <body>
     <style>
+        @font-face {
+            font-family: 'paybooc';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/paybooc-Bold.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
         html {
             -webkit-text-size-adjust: none;
             width: 100%;
@@ -38,8 +44,8 @@
         #bigcontainer {
             text-align: center;
             width: 100%;
-	    height: 100%;
-	    overflow: scroll;
+	        height: 100%;
+	        overflow: scroll;
         }
         body {
             background-color: black;
@@ -47,25 +53,25 @@
             height: 100%;
         }
         h1 {
-            font-family:'Do Hyeon'; sans-serif;
+            font-family:'paybooc'; sans-serif;
             font-size: 64px;
             color: white;
             -webkit-text-stroke: 2px black;
         }
         h2 {
-            font-family:'Do Hyeon'; sans-serif;
+            font-family:'paybooc'; sans-serif;
             font-size: 40px;
             color: white;
             -webkit-text-stroke: 1px black;
         }
         h3 {
-            font-family:'Do Hyeon'; sans-serif;
+            font-family:'paybooc'; sans-serif;
             font-size: 30px;
             color: white;
             -webkit-text-stroke: 1px black;
         }
         h4 {
-            font-family:'Do Hyeon'; sans-serif;
+            font-family:'paybooc'; sans-serif;
             font-size: 24px;
             color: white;
             -webkit-text-stroke: 1px black;
@@ -76,7 +82,7 @@
             -webkit-text-stroke: 1px black;
         }
         p {
-            font-family: 'Do Hyeon'; sans-serif;
+            font-family:'paybooc'; sans-serif;
             font-size: 20px;
             color: white;
             -webkit-text-stroke: 1px black;
@@ -85,10 +91,37 @@
             background-color: #00000088;
         }
         #allytips {
-	    background-color: #5F9#A088;
+            margin-left: 5%;
+            margin-right: 5%;
+            text-align: left;
+            background-color: #1520A688;
+            font-family:'paybooc'; sans-serif;
+            font-size: 20px;
+            color: white;
+            -webkit-text-stroke: 1px black;
         }
         #enemytips {
-	    background-color: #CD5C5C88;
+            margin-left: 5%;
+            margin-right: 5%;
+            text-align: left;
+            background-color: #E3242B88;
+            font-family:'paybooc'; sans-serif;
+            font-size: 20px;
+            color: white;
+            -webkit-text-stroke: 1px black;
+        }
+        #skillcontainer, #longstory {
+            margin-left: 5%;
+            margin-right: 5%;
+            text-align: left;
+        }
+        .spelldesc {
+            text-align: center;
+        }
+        .spellimg {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
     </style>
@@ -99,21 +132,24 @@
 
         </div>
             <div id="imgcontainer"></div>
+            <h2 id="position"></h2>
             <h2 id="description"></h2>
             <h2 id="champtag"></h2>
             <h2 id=champinfo></h2>
-        <!-- <div id="fullimage"></div> -->
-        <h2 id="position"></h2>
-        <h3 id="skin"></h3>
+            <h3 id="skin"></h3>
+        <!-- 스킬 -->
+        <h3> -스킬- </h3>
+        <div id="skillcontainer">
+        </div>
+        <!-- 팁 -->
         <div>
             <h3> -팁- </h3>
-            <h4><ul id="allytips"></ul></h4>
-            <h4><ul id="enemytips"></ul></h4>
+            <p><ul id="allytips"></ul></p>
+            <p><ul id="enemytips"></ul></p>
         </div>
-        <div id="skillcontainer">
-            <h3> -스킬- </h3>
-        </div>
-        <p id="longstory"> -스토리- <br> </p>
+        <!-- 스토리 -->
+        <h3>-스토리-</h3>
+        <p id="longstory"></p>
         <footer>
             <p>
             Developed by HBKProduction<br>
@@ -242,6 +278,8 @@
             for (spell of spellArray) {
                 spellDiv = document.createElement("div");
                 spellImg = document.createElement("img");
+                // Set spellImg class as spellimg
+                spellImg.setAttribute("class", "spellimg");
                 spellTextDiv = document.createElement("div");
                 spellImgLink = GetSkillImage(
                     spell["image"]["full"],
@@ -254,7 +292,7 @@
                     prefix = "";
                 }
                 spellImg.setAttribute("src", spellImgLink);
-                spellText = `<h3>${prefix} ${spell["name"]}<br></h3> <p>${spell["description"]}</p>`
+                spellText = `<h3 class="spelldesc">${prefix} ${spell["name"]}<br></h3> <p>${spell["description"]}</p>`
                 spellDiv.appendChild(spellImg);
                 spellTextDiv.innerHTML += spellText;
                 spellDiv.appendChild(spellTextDiv);
